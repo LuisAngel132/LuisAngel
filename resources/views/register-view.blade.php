@@ -54,44 +54,42 @@ body {
 
 
         <div id="login">
-        <h3 class="text-center text-white pt-5">Iniciar Sesión MenyUba</h3>
         <div class="container">
             <div id="login-row" class="row justify-content-center align-items-center">
                 <div id="login-column" class="col-md-6">
                     <div id="login-box" class="col-md-12">
                         <form id="login-form" class="form" action="register" method="POST">
                         @csrf
-                            <h3 class="text-center text-info ">Registrarse</h3>
+                            <h3 class="text-center text-info ">CREAR CUENTA</h3>
                             <div class="form-group">
-                                <label for="username" class="text-info">Correo Electronico:</label><br>
                                 <input type="email" id="typeEmailX" class="form-control form-control-lg" name="email" required>
                             </div>
                             <span style="color:red;">@error('email')
                             {{$message}}
                             @enderror
                         </span>
+                        <br>
                             <div class="form-group">
-                                <label for="password" class="text-info">Contraseña:</label><br>
                                 <input class="form-control" type="password" id="typePasswordX" name="password" required>
                             </div>
                             <span style="color:red;">@error('password')
                             {{$message}}
                             @enderror
                         </span>
+                        <br>
                             <div class="form-group">
-                                <label for="password" class="text-info">Confirmar contraseña:</label><br>
                                 <input type="password" id="typePasswordX" class="form-control" name="password_confirmation" required/>
                             </div>
                             <span style="color:red;">@error('password')
                             {{$message}}
                             @enderror
                         </span>
+                        <br>
                             <div class="form-group">
-                                <label for="remember-me" class="text-info"><span>Recordarme</span> <span><input id="remember-me" name="remember-me" type="checkbox"></span></label><br>
                                 <button type="submit" name="submit" class="btn btn-info btn-md">Registrarse</button>
                             </div>
                             <div id="register-link" class="text-right">
-                                <a href="login" class="text-info">Iniciar sesión aquí</a>
+                                <a href="login" class="text-info">Login</a>
                             </div>
                         </form>
                     </div>
