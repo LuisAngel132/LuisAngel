@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -33,8 +34,6 @@ Route::get('home', function () {
 Route::get('code/{email}', function ($email) {
     return view('code-view')->with('email', $email);
 })->name('code');
-
-
 
 Route::fallback(function () {
     return redirect('/login');

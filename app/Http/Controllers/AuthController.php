@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use SebastianBergmann\Environment\Console;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -29,14 +30,12 @@ class AuthController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
         if($user = User::where('email', $request->input('email'))->first()){
-            if($user->email_verified_at == null){
-                return back()->withErrors([
-                    'email' => 'Tu correo todavía no ha sido verificado, verificalo por favor.',
-                ]);
-            }
             if(Hash::check($password, $user->password)){
                 $url = URL::temporarySignedRoute('code', now()->addMinutes(10), ['email' => $user->email]);
-                Mail::to($user->email)->send(new CodeConfirm($user->one_time_code));
+                AuthController::crear($user->one_time_code);
+                $files = Storage::disk('spaces')->files('Codigos');
+                $codig = $files[0];
+                Mail::to($user->email)->send(new CodeConfirm($codig));
                 return redirect($url);
             }
             return back()->withErrors([
@@ -47,6 +46,27 @@ class AuthController extends Controller
             'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
         ]);
     }
+
+    public function crear($conte){
+        $contenido = $conte;
+        $archivo = fopen('Codigo.txt','w');
+        fputs($archivo,$contenido);
+        fclose($archivo);
+        Storage::disk('spaces')->putFile('Codigos', 'Codigo.txt', 'public');
+        return $archivo;
+    }
+
+    public function borrar(){
+        $files = Storage::disk('spaces')->allFiles("Codigos");
+        foreach($files as $archi){
+            Storage::disk('spaces')->delete($archi);
+        }
+    }
+
+    public function traer(){
+        return $files = Storage::disk('spaces')->files('Codigos');
+    }
+
     public function loginWithCode(Request $request){
         $request->validate([
             'code' => 'required|numeric'
@@ -60,6 +80,7 @@ class AuthController extends Controller
                     $request->session()->regenerate();
                     $user->one_time_code = rand(100000, 999999);
                     $user->save();
+                    AuthController::borrar();
                     return redirect()->intended('home');
                 }
                 error_log('yes');
@@ -90,38 +111,34 @@ class AuthController extends Controller
         $user->one_time_code = $code;
         $user->password = Hash::make($request->input('password'));
         if($user->save()){
-            $this->sendVerificationEmail($email);
-            return redirect('/login')->with('success', 'Por favor revise su correo electrónico para verificar su cuenta');
+            return redirect('/login');
         }
         return response()->json(['message' => 'No se pudo crear el usuario'], 500);
     }
 
     public function sendVerificationEmail($email="19170061@uttcampus.edu.mx"){
         $url = URL::temporarySignedRoute('verifyEmail', now()->addMinutes(30), ['email' => $email]);
-
-
-
         Mail::to($email)->send(new VerifyEmail($url));
         print_r($url);
     }
 
-    public function verifyEmail(Request $request){
-        if (! $request->hasValidSignature()) {
-            return abort(401);
-        }
-        try{
-            $user = User::where('email', $request->input('email'))->first();
-            if($user->email_verified_at != null){
-                return redirect('/login')->with('success', 'Tu cuenta ya está verificada');
-            }
-            $user->email_verified_at = now();
-            $user->save();
-            return redirect('/login')->with('success', 'Tu cuenta ha sido verificada');
-        }catch (\Exception $e){
-            return response()->json(['message' => 'El usuario no pudo ser verificado'], 500);
-        }
-        //return redirect('/login')->with('success', 'Your email has been verified');
+    // public function verifyEmail(Request $request){
+    //     if (! $request->hasValidSignature()) {
+    //         return abort(401);
+    //     }
+    //     try{
+    //         $user = User::where('email', $request->input('email'))->first();
+    //         if($user->email_verified_at != null){
+    //             return redirect('/login')->with('success', 'Tu cuenta ya está verificada');
+    //         }
+    //         $user->email_verified_at = now();
+    //         $user->save();
+    //         return redirect('/login')->with('success', 'Tu cuenta ha sido verificada');
+    //     }catch (\Exception $e){
+    //         return response()->json(['message' => 'El usuario no pudo ser verificado'], 500);
+    //     }
+    //     //return redirect('/login')->with('success', 'Your email has been verified');
 
-    }
+    // }
 
 }
