@@ -1,108 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="{{ URL::to('css/login.css') }}">
-    <link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-  rel="stylesheet"
-/>
-<!-- Google Fonts -->
-<link
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-  rel="stylesheet"
-/>
-<!-- MDB -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css"
-  rel="stylesheet"
-/>
-    <title>Register</title>
-    <style>
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #1a202c;
-  height: 100vh;
-}
-#login .container #login-row #login-column #login-box {
-  margin-top: 120px;
-  max-width: 600px;
-  height: 300px;
-  border: 1px solid #9C9C9C;
-  background-color: #EAEAEA;
-}
-#login .container #login-row #login-column #login-box #login-form {
-  padding: 20px;
-}
-#login .container #login-row #login-column #login-box #login-form  {
-  margin-top: -15px;
-}
+@extends('app')
+@section('title','Register')
+@section('content')
+<div class="block mx-auto my-12 p-8 bg-white w-1/3 border border-gray-200 rounded-lg shadow-lg">
 
-#register-link {
-    margin-top: -35px;
-    margin-left:390px;
-}
-    </style>
-</head>
-<body>
-    <section class="vh-100 gradient-custom">
+    <h1 class="text-3x1 text-center font-bold">Register</h1>
 
+<form id="login-form" class="form" action="register" method="POST">
+    @csrf
 
+    <input type="email" class="border border-gray-200 rounded-md bg-gray-200 w-full text-lg placeholder-gray-900 p-2 my-2 focus:bg-white" placeholder="Enter your email"
+    id="email" name="email">
+    <input type="password" class="border border-gray-200 rounded-md bg-gray-200 w-full text-lg placeholder-gray-900 p-2 my-2 focus:bg-white" placeholder="Enter your password"
+    id="password" name="password">
+    <input type="password" class="border border-gray-200 rounded-md bg-gray-200 w-full text-lg placeholder-gray-900 p-2 my-2 focus:bg-white" placeholder="Repeat password "
+  id="password_confirmation" name="password_confirmation">
+@error('mesagge')
+     <p class="border border-red-500 rounded-md bg-red-100 w-full text-red-600 p-2 my-2">*ERROR</p>
+@enderror
 
+<button type="submit" class="rounded-md bg-indigo-500 w-full text-lg text-white font-semibold p-2 my-3 hover:bg-indigo-600">Send</button>
 
-        <div id="login">
-        <div class="container">
-            <div id="login-row" class="row justify-content-center align-items-center">
-                <div id="login-column" class="col-md-6">
-                    <div id="login-box" class="col-md-12">
-                        <form id="login-form" class="form" action="register" method="POST">
-                        @csrf
-                            <h3 class="text-center text-info ">CREAR CUENTA</h3>
-                            <div class="form-group">
-                                <input type="email" id="typeEmailX" class="form-control form-control-lg" name="email" required>
-                            </div>
-                            <span style="color:red;">@error('email')
-                            {{$message}}
-                            @enderror
-                        </span>
-                        <br>
-                            <div class="form-group">
-                                <input class="form-control" type="password" id="typePasswordX" name="password" required>
-                            </div>
-                            <span style="color:red;">@error('password')
-                            {{$message}}
-                            @enderror
-                        </span>
-                        <br>
-                            <div class="form-group">
-                                <input type="password" id="typePasswordX" class="form-control" name="password_confirmation" required/>
-                            </div>
-                            <span style="color:red;">@error('password')
-                            {{$message}}
-                            @enderror
-                        </span>
-                        <br>
-                            <div class="form-group">
-                                <button type="submit" name="submit" class="btn btn-info btn-md">Registrarse</button>
-                            </div>
-                            <div id="register-link" class="text-right">
-                                <a href="login" class="text-info">Login</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+@endsection
 
-      </section>
-
-<script
-    type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js"
-></script>
-</body>
-</html>
